@@ -4,6 +4,7 @@ import * as xlsx from "xlsx";
 
 import { prisma } from "./prisma";
 import { Backlog } from "./interfaces/backlog";
+import { SpreadsheetData } from "./interfaces/spreadsheetData";
 
 const app = express();
 
@@ -19,15 +20,10 @@ app.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
     const workbook = xlsx.readFile(file!.path);
-    const worksheet =
-      workbook.Sheets[
-        workbook.SheetNames[
-          workbook.SheetNames.findIndex((item) => item === "Backlog")
-        ]
-      ];
-    const data: any = xlsx.utils.sheet_to_json(worksheet);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const data: SpreadsheetData[] = xlsx.utils.sheet_to_json(worksheet);
 
-    const formattedData: Backlog[] = data.map((item: any) => {
+    const formattedData: Backlog[] = data.map((item: SpreadsheetData) => {
       return {
         userEmail: item["E-mail User"],
         tempoParado: item["Tempo parado"],
@@ -45,7 +41,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       data: formattedData,
     });
 
-    res.status(200).json(formattedData);
+    res.status(200).json(data);
   } catch (error) {
     console.error(error);
     res
