@@ -9,3 +9,16 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Backlog {
+  id                      Int      @id @default(autoincrement())
+  userEmail               String   @map("user_email") @db.VarChar(255)
+  tempoParado             Int      @map("tempo_parado")
+  diaDaSemana             Int      @map("dia_da_semana")
+  diaDaSemanaNominal      String   @map("dia_da_semana_nominal") @db.VarChar(20)
+  vencimentoLiquido       DateTime @map("vencimento_liquido")
+  atraso                  String   @db.VarChar(50)
+  recebidoEmAtraso        Int      @map("recebido_em_atraso")
+  recebidoEmAtrasoNominal String   @map("recebido_em_atraso_nominal") @db.VarChar(50)
+  status                  String   @db.VarChar(50)
+}
