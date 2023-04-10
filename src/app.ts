@@ -20,7 +20,12 @@ app.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
     const workbook = xlsx.readFile(file!.path);
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const worksheet =
+      workbook.Sheets[
+        workbook.SheetNames[
+          workbook.SheetNames.findIndex((item) => item === "Backlog") || 0
+        ]
+      ];
     const data: SpreadsheetData[] = xlsx.utils.sheet_to_json(worksheet);
 
     const formattedData: Backlog[] = data.map((item: SpreadsheetData) => {
@@ -39,9 +44,10 @@ app.post("/upload", upload.single("file"), async (req, res) => {
 
     await prisma.backlog.createMany({
       data: formattedData,
+      skipDuplicates: true,
     });
 
-    res.status(200).json(data);
+    res.status(200).json(formattedData);
   } catch (error) {
     console.error(error);
     res
