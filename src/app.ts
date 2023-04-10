@@ -2,6 +2,9 @@ import express from "express";
 import multer from "multer";
 import * as xlsx from "xlsx";
 
+import { prisma } from "./prisma";
+import { Backlog } from "./interfaces/backlog";
+
 const app = express();
 
 const upload = multer({ dest: "uploads/" });
@@ -12,13 +15,37 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.post("/upload", upload.single("file"), (req, res) => {
+app.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
     const workbook = xlsx.readFile(file!.path);
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = xlsx.utils.sheet_to_json(worksheet);
-    res.status(200).json(data);
+    const worksheet =
+      workbook.Sheets[
+        workbook.SheetNames[
+          workbook.SheetNames.findIndex((item) => item === "Backlog")
+        ]
+      ];
+    const data: any = xlsx.utils.sheet_to_json(worksheet);
+
+    const formattedData: Backlog[] = data.map((item: any) => {
+      return {
+        userEmail: item["E-mail User"],
+        tempoParado: item["Tempo parado"],
+        diaDaSemana: item["DIA DA SEMANA"],
+        diaDaSemanaNominal: item["DIA DA SEMANA 2"],
+        vencimentoLiquido: new Date(item["VENCIMENTO LIQUIDO"]),
+        atraso: item["ATRASO"],
+        recebidoEmAtraso: item["RECEBIDO EM ATRASO"],
+        recebidoEmAtrasoNominal: item["RECEBIDO EM ATRASO2"],
+        status: item["Status"],
+      };
+    });
+
+    await prisma.backlog.createMany({
+      data: formattedData,
+    });
+
+    res.status(200).json(formattedData);
   } catch (error) {
     console.error(error);
     res

@@ -21,4 +21,6 @@ model Backlog {
   recebidoEmAtraso        Int      @map("recebido_em_atraso")
   recebidoEmAtrasoNominal String   @map("recebido_em_atraso_nominal") @db.VarChar(50)
   status                  String   @db.VarChar(50)
+
+  @@map("tb_backlog")
 }
