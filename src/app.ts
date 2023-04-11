@@ -3,8 +3,8 @@ import multer from "multer";
 import * as xlsx from "xlsx";
 
 import { prisma } from "./prisma";
-import { Backlog } from "./interfaces/backlog";
 import { SpreadsheetData } from "./interfaces/spreadsheetData";
+import { formatter } from "./utils/data_formatter";
 
 const app = express();
 
@@ -28,19 +28,13 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       ];
     const data: SpreadsheetData[] = xlsx.utils.sheet_to_json(worksheet);
 
-    const formattedData: Backlog[] = data.map((item: SpreadsheetData) => {
-      return {
-        userEmail: item["E-mail User"],
-        tempoParado: item["Tempo parado"],
-        diaDaSemana: item["DIA DA SEMANA"],
-        diaDaSemanaNominal: item["DIA DA SEMANA 2"],
-        vencimentoLiquido: new Date(item["VENCIMENTO LIQUIDO"]),
-        atraso: item["ATRASO"],
-        recebidoEmAtraso: item["RECEBIDO EM ATRASO"],
-        recebidoEmAtrasoNominal: item["RECEBIDO EM ATRASO2"],
-        status: item["Status"],
-      };
-    });
+    const formattedData = formatter(data);
+
+    if (formattedData.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "No data was found in the spreadsheet" });
+    }
 
     await prisma.backlog.createMany({
       data: formattedData,
