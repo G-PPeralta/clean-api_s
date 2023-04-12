@@ -1,6 +1,6 @@
 import express from "express";
 
-import { backlogRouter, uploadRouter, loginRouter } from "./routes";
+import { backlogRouter, uploadRouter, loginRouter, userRouter } from "./routes";
 
 const app = express();
 
@@ -11,6 +11,9 @@ app.post("/upload", uploadRouter);
 app.use("/backlog", backlogRouter);
 
 app.use("/login", loginRouter);
+
+app.use("/user", userRouter);
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

@@ -2,7 +2,7 @@ import { Router } from "express";
 
 const loginRouter = Router();
 
-loginRouter.post("/", (rec, res) => {
+loginRouter.post("/", (req, res) => {
     return res.send("logou");
 })
 
