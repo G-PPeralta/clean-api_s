@@ -1,8 +1,9 @@
 import { Router } from "express";
 
 import { SpreadsheetData } from "../interfaces/spreadsheetData";
-import { formatter } from "../utils/data_formatter";
-import { connectDB } from "../infra/db";
+import { SaveBacklog } from "../domain/usecases/SaveBacklog";
+
+const saveBacklog = new SaveBacklog();
 
 import multer from "multer";
 import * as xlsx from "xlsx";
@@ -23,22 +24,7 @@ uploadRouter.post("/upload", upload.single("file"), async (req, res) => {
       ];
     const data: SpreadsheetData[] = xlsx.utils.sheet_to_json(worksheet);
 
-    const formattedData = formatter(data);
-    console.log(formattedData);
-
-    const db = await connectDB();
-    const backlog = db.collection("backlog2");
-
-    if (formattedData.length === 0) {
-      return res
-        .status(400)
-        .json({ error: "No data was found in the spreadsheet" });
-    }
-
-    await backlog.insertMany(formattedData, {
-      ordered: false,
-      ignoreDuplicates: true,
-    });
+    await saveBacklog.save(data);
 
     res.status(200).json({ message: "Backlog inserted!" });
   } catch (error) {
@@ -50,3 +36,20 @@ uploadRouter.post("/upload", upload.single("file"), async (req, res) => {
 });
 
 export { uploadRouter };
+
+// import { Router } from "express";
+// import { UploadController } from "../../src/presentation/controllers/upload";
+
+// const uploadRouter = Router();
+// const uploadController = new UploadController(upload);
+
+// uploadRouter.post("/", upload.single("file"), async (_req, res) => {
+//   try {
+//     const result = await uploadController.handle();
+//     res.status(result.statusCode).json(result.body);
+//   } catch (error) {
+//     res.status(500).json({ error: "An error occurred" });
+//   }
+// });
+
+// export { backlogRouter };

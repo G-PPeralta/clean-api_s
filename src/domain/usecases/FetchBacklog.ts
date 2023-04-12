@@ -19,7 +19,6 @@ export class FetchBacklog implements FetchBacklogRequest {
 
       return data;
     } catch (error) {
-      console.error(error);
       return { error: "An error occurred while fetching the backlog data" };
     }
   };

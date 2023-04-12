@@ -1,7 +1,14 @@
-import { BackLog } from "../entities/backlog";
+// import { BackLog } from "../entities/backlog";
 
-export interface Upload {
-  upload: (
-    spreadsheetData: BackLog.SpreadsheetData[]
-  ) => Promise<BackLog.BackLogContent[]>;
-}
+// export interface UploadRequest {
+//   upload: (
+//     spreadsheetData: BackLog.SpreadsheetData[]
+//   ) => Promise<BackLog.BackLogContent[]>;
+// }
+
+// export class Upload implements UploadRequest {
+//   async upload(spreadsheetData: BackLog.SpreadsheetData[]) {
+//     try {
+//     } catch (error) {}
+//   }
+// }
