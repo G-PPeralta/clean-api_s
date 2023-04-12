@@ -1,18 +1,18 @@
+import { encodePassword } from "../../utils/encode_password";
 import { User } from "../entities/user";
 
 export interface FetchAllUsersRequest {
-    fetch(): Promise<User.User[]>;
+  fetch(): Promise<User.User[]>;
 }
 
 export class FetchAllUsers implements FetchAllUsersRequest {
-  
   fetch(): Promise<User.User[]> {
     return Promise.resolve([
       {
         id: "1",
         name: "Alice",
         email: "alice@example.com",
-        password: "password1",
+        password: encodePassword("password1"),
       },
       {
         id: "2",
