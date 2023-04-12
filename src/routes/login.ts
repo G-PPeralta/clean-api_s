@@ -25,7 +25,6 @@ loginRouter.post("/", async (req, res) => {
       if (err) throw err;
 
       if (!isMatch) {
-        console.log("isMatchDENTRODOIF", isMatch);
         return res
           .status(401)
           .json({ errors: [{ msg: "Invalid credentials" }] });
