@@ -3,8 +3,11 @@ import { UploadController } from "../presentation/controllers/upload";
 
 import { SaveBacklog } from "../domain/usecases/SaveBacklog";
 import { ReadFile } from "../domain/usecases/ReadFile";
+import { PrismaClient } from "@prisma/client";
 
-const saveBacklog = new SaveBacklog();
+const prisma = new PrismaClient();
+
+const saveBacklog = new SaveBacklog(prisma);
 const readFile = new ReadFile();
 
 import multer from "multer";
@@ -15,7 +18,7 @@ const upload = multer({ dest: "uploads/" });
 
 const uploadController = new UploadController(saveBacklog, readFile);
 
-uploadRouter.post("/upload", upload.single("file"), async (req, res) => {
+uploadRouter.post("/", upload.single("file"), async (req, res) => {
   try {
     await uploadController.handle(req);
 

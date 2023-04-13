@@ -4,13 +4,16 @@ import { AddAccount } from "../domain/usecases/AddAccount";
 import { FetchAllUserController } from "../presentation/controllers/fetchAllUsers";
 import { AddAccountController } from "../presentation/controllers/addAccount";
 import { serverError } from "../presentation/helpers/http-helper";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const userRouter = Router();
 
-const fetchAllUsers = new FetchAllUsers();
+const fetchAllUsers = new FetchAllUsers(prisma);
 const fetchAllUsersController = new FetchAllUserController(fetchAllUsers);
 
-const addAccount = new AddAccount(fetchAllUsers);
+const addAccount = new AddAccount(prisma);
 const addAccountController = new AddAccountController(addAccount);
 
 userRouter.get("/", async (req, res) => {

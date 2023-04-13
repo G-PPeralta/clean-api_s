@@ -1,7 +1,7 @@
-import { SpreadsheetData } from "../interfaces/spreadsheetData";
+import { BackLog } from "../domain/entities/backlog";
 
-export function formatter(sheet: SpreadsheetData[]) {
-  return sheet.map((item: SpreadsheetData) => {
+export function formatter(sheet: BackLog.SpreadsheetData[]) {
+  return sheet.map((item: BackLog.SpreadsheetData) => {
     return {
       vim: item["ID do doc."],
       numDoc: item["Num. doc."],

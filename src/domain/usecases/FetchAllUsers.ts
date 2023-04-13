@@ -1,4 +1,5 @@
-import { encodePassword } from "../../utils/encode_password";
+import { PrismaClient } from "@prisma/client";
+
 import { User } from "../entities/user";
 
 export interface FetchAllUsersRequest {
@@ -6,26 +7,9 @@ export interface FetchAllUsersRequest {
 }
 
 export class FetchAllUsers implements FetchAllUsersRequest {
-  fetch(): Promise<User.User[]> {
-    return Promise.resolve([
-      {
-        id: "1",
-        name: "Alice",
-        email: "alice@example.com",
-        password: encodePassword("password1"),
-      },
-      {
-        id: "2",
-        name: "Bob",
-        email: "bob@example.com",
-        password: "password2",
-      },
-      {
-        id: "3",
-        name: "Charlie",
-        email: "charlie@example.com",
-        password: "password3",
-      },
-    ]);
+  constructor(private prisma: PrismaClient) {}
+
+  async fetch(): Promise<User.User[]> {
+    return await this.prisma.user.findMany();
   }
 }

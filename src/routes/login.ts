@@ -2,10 +2,13 @@ import { Router } from "express";
 import { FetchAllUsers } from "../domain/usecases/FetchAllUsers";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { PrismaClient } from "@prisma/client";
 
 const loginRouter = Router();
 
-const fetchAllUsers = new FetchAllUsers();
+const prisma = new PrismaClient();
+
+const fetchAllUsers = new FetchAllUsers(prisma);
 
 loginRouter.post("/", async (req, res) => {
   const { email, password } = req.body;
