@@ -18,9 +18,9 @@ const upload = multer({ dest: "uploads/" });
 
 const uploadController = new UploadController(saveBacklog, readFile);
 
-uploadRouter.post("/", upload.single("file"), async (req, res) => {
+uploadRouter.post("/", upload.single("file"), (req, res) => {
   try {
-    await uploadController.handle(req);
+    uploadController.handle(req);
 
     res.status(200).json({ message: "Backlog inserted!" });
   } catch (error) {
